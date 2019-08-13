@@ -42,6 +42,8 @@ modules: [
 ]
 ```
 
+You can use the special `DEMO_KEY` api key for your tests but it has much lower rate limits !
+
 ### Options
 
 The following properties can be configured:
