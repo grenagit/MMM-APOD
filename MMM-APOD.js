@@ -17,8 +17,10 @@ Module.register("MMM-APOD",{
 		animationSpeed: 1000, // 1 second
 		maxMediaWidth: 0,
 		maxMediaHeight: 0,
+		maxDescriptionLength: 200,
 		showTitle: true,
 		showDescription: false,
+		useShortDescription: true,
 
 		initialLoadDelay: 0, // 0 seconds delay
 		retryDelay: 2500, // 2,5 seconds
@@ -116,7 +118,18 @@ Module.register("MMM-APOD",{
 			var apodDescription = document.createElement('div');
 
 			apodDescription.className = "dimmed light xsmall";
-			apodDescription.innerHTML = this.description;
+
+			if (this.config.maxMediaWidth != 0) {
+				apodDescription.style = 'max-width: ' + this.config.maxMediaWidth + 'px;';
+			} else {
+				apodDescription.style = 'max-width: 960px;';
+			}
+
+			if(this.config.useShortDescription) {
+				apodDescription.innerHTML = this.shortText(this.description, this.config.maxDescriptionLength);
+			} else {
+				apodDescription.innerHTML = this.description;
+			}
 
 			wrapper.appendChild(apodDescription);
 		}
@@ -187,6 +200,17 @@ Module.register("MMM-APOD",{
 		setTimeout(function() {
 			self.updateAPOD();
 		}, nextLoad);
+	},
+
+	// Short text without cutting sentences and words
+	shortText: function (text, maxLenght) {
+		if (text.lastIndexOf(".", maxLenght) !== -1) {
+			return text.substr(0, text.lastIndexOf(".", maxLenght)) + ".";
+		} else if (text.lastIndexOf(" ", maxLenght) !== -1) {
+			return text.substr(0, text.lastIndexOf(" ", maxLenght)) + "&hellip;";
+		} else {
+			return text.substr(0, maxLenght) + "&hellip;";
+		} 
 	}
 
 });

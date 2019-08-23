@@ -1,7 +1,7 @@
 # Module: MMM-APOD
 This module displays the last Astronomy Picture Of the Day (APOD), including media (image or video), title, description and copyright.
 
-The max-height and max-width of the media can be fixed and title and description display may be enabled or disabled independently.
+The max-height and max-width of the media can be fixed. Title and description display may be enabled or disabled independently. Description can be shorted and lenght can be fixed.
 
 <p align="left">
 <img alt="MMM-APOD Screenshot #1" src="MMM-APOD_screenshot1.png" height="250px">
@@ -25,6 +25,18 @@ git clone https://github.com/grenagit/MMM-APOD
 
 Configure the module in your config.js file.
 
+## Update:
+
+In your terminal, go to your MMM-APOD's Module folder:
+
+```shell
+cd ~/MagicMirror/modules/MMM-APOD
+```
+Incorporate changes from this repository:
+```shell
+git pull
+```
+
 ## Configuration:
 
 ### Basic configuration
@@ -42,7 +54,7 @@ modules: [
 ]
 ```
 
-You can use the special `DEMO_KEY` api key for your tests but it has much lower rate limits !
+You can use the special `DEMO_KEY` API Key for your tests but it has much lower rate limits !
 
 ### Options
 
@@ -56,16 +68,18 @@ The following properties can be configured:
 | `animationSpeed`             | Speed of the update animation. (Milliseconds) <br><br> **Possible values:**`0` - `5000` <br> **Default value:** `1000` (1 second)
 | `maxMediaWidth`              | Maximum width for media display. If set to 0, the media's actual width is used. (Pixels) <br><br> **Possible values:**`0` - `5000` <br> **Default value:** `0` (media's width)
 | `maxMediaHeight`             | Maximum height for media display. If set to 0, the media's actual height is used. (Pixels) <br><br> **Possible values:**`0` - `5000` <br> **Default value:** `0` (media's height)
-| `showTitle`                  | Show the title <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
-| `showDescription`	       | Show the description <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
+| `maxDescriptionLength`       | Maximum length for short description display. <br> **Default value:** `200`
+| `showTitle`                  | Show the title. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
+| `showDescription`            | Show the description. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
+| `useShortDescription`        | Short the description. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
 | `initialLoadDelay`           | The initial delay before loading. If you have multiple modules that use the same API key, you might want to delay one of the requests. (Milliseconds) <br><br> **Possible values:** `1000` - `5000` <br> **Default value:**  `0`
 | `retryDelay`                 | The delay before retrying after a request failure. (Milliseconds) <br><br> **Possible values:** `1000` - `60000` <br> **Default value:**  `2500`
 | `apiBase`                    | The NASA API base URL. <br><br> **Default value:**  `'https://api.nasa.gov/'`
-| `apodEndpoint`	       | The APOD API endPoint. <br><br> **Default value:**  `'planetary/apod'`
+| `apodEndpoint`               | The APOD API endPoint. <br><br> **Default value:**  `'planetary/apod'`
 
 ### Todo
 
-- [ ] Create a function to summarize the description
+- [x] Create a function to summarize the description
 
 ### License
 
