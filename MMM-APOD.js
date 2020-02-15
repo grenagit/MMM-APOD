@@ -154,11 +154,16 @@ Module.register("MMM-APOD",{
 			if (this.readyState === 4) {
 				if (this.status === 200) {
 					self.processAPOD(JSON.parse(this.response));
-				} else if (this.status === 401) {
+				} else if (this.status === 403) {
 					self.updateDom(self.config.animationSpeed);
 
 					Log.error(self.name + ": Incorrect APPID.");
-					retry = true;
+					retry = false;
+				} else if (this.status === 429) {
+					self.updateDom(self.config.animationSpeed);
+
+					Log.error(self.name + ": Rate limit exceeded.");
+					retry = false;
 				} else {
 					Log.error(self.name + ": Could not load APOD.");
 				}

@@ -14,10 +14,10 @@ The max-height and max-width of the media can be fixed. Title and description di
 ## Installation:
 
 In your terminal, go to your MagicMirror's Module folder:
-
 ```shell
 cd ~/MagicMirror/modules
 ```
+
 Clone this repository:
 ```shell
 git clone https://github.com/grenagit/MMM-APOD
@@ -28,10 +28,10 @@ Configure the module in your config.js file.
 ## Update:
 
 In your terminal, go to your MMM-APOD's Module folder:
-
 ```shell
 cd ~/MagicMirror/modules/MMM-APOD
 ```
+
 Incorporate changes from this repository:
 ```shell
 git pull
@@ -80,6 +80,7 @@ The following properties can be configured:
 ### Todo
 
 - [x] Create a function to summarize the description
+- [x] Add an error message if the rate limit is exceeded.
 
 ### License
 
