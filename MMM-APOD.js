@@ -29,6 +29,11 @@ Module.register("MMM-APOD",{
 		apodEndpoint: "planetary/apod",
 	},
 
+	// Define required scripts
+	getStyles: function() {
+		return ["MMM-APOD.css"];
+	},
+
 	// Define start sequence
 	start: function() {
 		Log.info("Starting module: " + this.name);
@@ -117,11 +122,11 @@ Module.register("MMM-APOD",{
 		if(this.config.showDescription) {
 			var apodDescription = document.createElement('div');
 
-			apodDescription.className = "dimmed light xsmall";
+			apodDescription.className = "dimmed light xsmall description";
 
 			if (this.config.maxMediaWidth != 0) {
 				apodDescription.style = 'max-width: ' + this.config.maxMediaWidth + 'px;';
-			} else {
+			} else if (this.type === "video") {
 				apodDescription.style = 'max-width: 960px;';
 			}
 
