@@ -89,9 +89,9 @@ Module.register("MMM-APOD",{
 
 			wrapper.appendChild(apodImage);
 		} else if (this.type === "video") {
-			var apodVideo = document.createElement('iframe');
+			var apodVideo = document.createElement('img');
 
-			var styleString = 'border: none;';
+			var styleString = '';
 			if (this.config.maxMediaWidth != 0) {
 				styleString += 'max-width: ' + this.config.maxMediaWidth + 'px;';
 			}
@@ -99,10 +99,10 @@ Module.register("MMM-APOD",{
 				styleString += 'max-height: ' + this.config.maxMediaHeight + 'px;';
 			}
 			apodVideo.style = styleString;
-
-			apodVideo.src = this.url.replace("www.youtube.com", "www.youtube-nocookie.com");
-			apodVideo.width = "960";
-			apodVideo.height = "540";
+			
+			let id = this.url.match(/(?:[?&]vi?=|\/embed\/|\/\d\d?\/|\/vi?\/|https?:\/\/(?:www\.)?youtu\.be\/)([^&\n?#]+)/)[1];
+			apodVideo.src = "http://img.youtube.com/vi/" + id + "/maxresdefault.jpg";
+			apodVideo.alt = this.title;
 
 			wrapper.appendChild(apodVideo);
 		} else {
