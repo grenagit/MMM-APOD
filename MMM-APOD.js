@@ -204,7 +204,7 @@ Module.register("MMM-APOD",{
 			}
 		} else if (this.type === "video") {
 			let id = this.url.match(/(?:[?&]vi?=|\/embed\/|\/\d\d?\/|\/vi?\/|https?:\/\/(?:www\.)?youtu\.be\/)([^&\n?#]+)/)[1];
-			this.url = "http://img.youtube.com/vi/" + id + "/maxresdefault.jpg";
+			this.url = "https://img.youtube.com/vi/" + id + "/maxresdefault.jpg";
 		} else {
 			Log.error(this.name + ": Type of media unknown (not image or video).");
 			return;
