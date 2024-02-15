@@ -197,7 +197,11 @@ Module.register("MMM-APOD",{
 		this.type = data.media_type;
 
 		if(this.type === "image") {
-			this.url = data.url;
+			if(typeof data.hdurl !== "undefined") {
+				this.url = data.hdurl;
+			} else {
+				this.url = data.url;
+			}
 		} else if (this.type === "video") {
 			let id = this.url.match(/(?:[?&]vi?=|\/embed\/|\/\d\d?\/|\/vi?\/|https?:\/\/(?:www\.)?youtu\.be\/)([^&\n?#]+)/)[1];
 			this.url = "http://img.youtube.com/vi/" + id + "/maxresdefault.jpg";
