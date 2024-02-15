@@ -95,15 +95,11 @@ Module.register("MMM-APOD",{
 
 			var apodImage = document.createElement('img');
 
-			var styleString = '';
 			if (this.config.maxMediaWidth != 0) {
-				styleString += 'max-width: ' + this.config.maxMediaWidth + 'px;';
+				apodImage.style.maxWidth = this.config.maxMediaWidth + 'px';
 			}
 			if (this.config.maxMediaHeight != 0) {
-				styleString += 'max-height: ' + this.config.maxMediaHeight + 'px;';
-			}
-			if (styleString != '') {
-				apodImage.style = styleString;
+				apodImage.style.maxHeight = this.config.maxMediaHeight + 'px';
 			}
 
 			apodImage.src = this.url;
@@ -126,9 +122,9 @@ Module.register("MMM-APOD",{
 				apodDescription.className = "dimmed light xsmall description";
 
 				if (this.config.maxMediaWidth != 0) {
-					apodDescription.style = 'max-width: ' + this.config.maxMediaWidth + 'px;';
+					apodDescription.style.maxWidth = this.config.maxMediaWidth + 'px';
 				} else if (this.type === "video") {
-					apodDescription.style = 'max-width: 960px;';
+					apodDescription.style.maxWidth = '960px';
 				}
 
 				if(this.config.useShortDescription) {
