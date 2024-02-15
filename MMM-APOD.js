@@ -18,6 +18,8 @@ Module.register("MMM-APOD",{
 		maxMediaWidth: 0,
 		maxMediaHeight: 0,
 		maxDescriptionLength: 200,
+		backgroundSize: "cover",
+		backgroundPosition: "center", 
 		showTitle: true,
 		showDescription: false,
 		useShortDescription: true,
@@ -43,6 +45,14 @@ Module.register("MMM-APOD",{
 		this.copyright = null;
 		this.type = null;
 		this.url = null;
+
+		if(this.data.position === 'fullscreen_below') {
+			this.backgrounded = true;
+			this.data.header = null;
+		} else {
+			this.backgrounded = false;
+		}
+
 		this.loaded = false;
 		this.scheduleUpdate(this.config.initialLoadDelay);
 	},
@@ -63,14 +73,26 @@ Module.register("MMM-APOD",{
 			return wrapper;
 		}
 
-		if(this.config.showTitle) {
-			var apodTitle = document.createElement('div');
-			apodTitle.className = "dimmed light small";
-			apodTitle.innerHTML = this.title;
-			wrapper.appendChild(apodTitle);
-		}
+		if(this.backgrounded) {
+			var apodBackground = document.createElement('div');
 
-		if (this.type === "image") {
+			apodBackground.className = "background";
+
+			apodBackground.style.backgroundSize = this.config.backgroundSize;
+			apodBackground.style.backgroundPosition = this.config.backgroundPosition;
+			apodBackground.style.backgroundImage = 'url("' + this.url + '")';
+
+			wrapper.appendChild(apodBackground);
+		} else {
+			if(this.config.showTitle) {
+				var apodTitle = document.createElement('div');
+
+				apodTitle.className = "dimmed light small";
+				apodTitle.innerHTML = this.title;
+ 
+				wrapper.appendChild(apodTitle);
+			}
+
 			var apodImage = document.createElement('img');
 
 			var styleString = '';
@@ -88,55 +110,35 @@ Module.register("MMM-APOD",{
 			apodImage.alt = this.title;
 
 			wrapper.appendChild(apodImage);
-		} else if (this.type === "video") {
-			var apodVideo = document.createElement('img');
 
-			var styleString = '';
-			if (this.config.maxMediaWidth != 0) {
-				styleString += 'max-width: ' + this.config.maxMediaWidth + 'px;';
-			}
-			if (this.config.maxMediaHeight != 0) {
-				styleString += 'max-height: ' + this.config.maxMediaHeight + 'px;';
-			}
-			apodVideo.style = styleString;
-			
-			let id = this.url.match(/(?:[?&]vi?=|\/embed\/|\/\d\d?\/|\/vi?\/|https?:\/\/(?:www\.)?youtu\.be\/)([^&\n?#]+)/)[1];
-			apodVideo.src = "http://img.youtube.com/vi/" + id + "/maxresdefault.jpg";
-			apodVideo.alt = this.title;
+			if(this.copyright != "" && typeof this.copyright !== "undefined") {
+				var apodCopyright = document.createElement('div');
 
-			wrapper.appendChild(apodVideo);
-		} else {
-			Log.error(this.name + ": Type of media unknown (not image or video).");
-			return;
-		}
+				apodCopyright.className = "dimmed thin xsmall";
+				apodCopyright.innerHTML = "&copy; " + this.copyright;
 
-		if(this.copyright != "" && typeof this.copyright !== "undefined") {
-			var apodCopyright = document.createElement('div');
-
-			apodCopyright.className = "dimmed thin xsmall";
-			apodCopyright.innerHTML = "&copy; " + this.copyright;
-
-			wrapper.appendChild(apodCopyright);
-		}
-
-		if(this.config.showDescription) {
-			var apodDescription = document.createElement('div');
-
-			apodDescription.className = "dimmed light xsmall description";
-
-			if (this.config.maxMediaWidth != 0) {
-				apodDescription.style = 'max-width: ' + this.config.maxMediaWidth + 'px;';
-			} else if (this.type === "video") {
-				apodDescription.style = 'max-width: 960px;';
+				wrapper.appendChild(apodCopyright);
 			}
 
-			if(this.config.useShortDescription) {
-				apodDescription.innerHTML = this.shortText(this.description, this.config.maxDescriptionLength);
-			} else {
-				apodDescription.innerHTML = this.description;
-			}
+			if(this.config.showDescription) {
+				var apodDescription = document.createElement('div');
 
-			wrapper.appendChild(apodDescription);
+				apodDescription.className = "dimmed light xsmall description";
+
+				if (this.config.maxMediaWidth != 0) {
+					apodDescription.style = 'max-width: ' + this.config.maxMediaWidth + 'px;';
+				} else if (this.type === "video") {
+					apodDescription.style = 'max-width: 960px;';
+				}
+
+				if(this.config.useShortDescription) {
+					apodDescription.innerHTML = this.shortText(this.description, this.config.maxDescriptionLength);
+				} else {
+					apodDescription.innerHTML = this.description;
+				}
+
+				wrapper.appendChild(apodDescription);
+			}
 		}
 
 		return wrapper;
@@ -193,7 +195,16 @@ Module.register("MMM-APOD",{
 		this.copyright = data.copyright;
 
 		this.type = data.media_type;
-		this.url = data.url;
+
+		if(this.type === "image") {
+			this.url = data.url;
+		} else if (this.type === "video") {
+			let id = this.url.match(/(?:[?&]vi?=|\/embed\/|\/\d\d?\/|\/vi?\/|https?:\/\/(?:www\.)?youtu\.be\/)([^&\n?#]+)/)[1];
+			this.url = "http://img.youtube.com/vi/" + id + "/maxresdefault.jpg";
+		} else {
+			Log.error(this.name + ": Type of media unknown (not image or video).");
+			return;
+		}
 
 		this.loaded = true;
 		this.updateDom(this.config.animationSpeed);

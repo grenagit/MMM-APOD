@@ -1,3 +1,13 @@
 .region.middle.center .MMM-APOD .description {
   margin: auto;
 }
+
+.region.fullscreen.below .MMM-APOD .background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+
+  background-repeat: no-repeat;
+}
