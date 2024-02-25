@@ -3,7 +3,7 @@ This module displays the last Astronomy Picture Of the Day (APOD), including med
 
 The max-height and max-width of the media can be fixed. Title and description display may be enabled or disabled independently. Description can be shorted and lenght can be fixed.
 
-MMM-APOD can be used to display the image in the background of [MagicMirror](https://magicmirror.builders/) with `position: "fullscreen_below"`!
+MMM-APOD can be used to display the image in the background of [MagicMirror](https://magicmirror.builders/) with `position: "fullscreen_below"`! Overlay image can be customized.
 
 <p align="left">
 <img alt="MMM-APOD Screenshot #1" src="MMM-APOD_screenshot1.png" height="250px">
@@ -73,6 +73,7 @@ The following properties can be configured:
 | `maxDescriptionLength`       | Maximum length for short description display. <br> **Default value:** `200`
 | `backgroundSize`             | Size of the background image [CSS property](https://developer.mozilla.org/docs/Web/CSS/background-size). <br><br> **Possible values:** `containe`, `cover` <br> **Default value:** `'cover'`
 | `backgroundPosition`         | Position of the background image [CSS property](https://developer.mozilla.org/docs/Web/CSS/background-position).  <br><br> **Possible values:** `top`, `bottom`, `left`, `right`, `center` <br> **Default value:** `'center'`
+| `backgroundOverlay`          | Overlay of the background image [CSS property](https://developer.mozilla.org/docs/Web/CSS/background).  <br><br> **Possible values:** `'rgba(0, 0, 0, 0.5)'` <br> **Default value:** `'linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.75) 100%)'`
 | `showTitle`                  | Show the title. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
 | `showDescription`            | Show the description. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
 | `useShortDescription`        | Short the description. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`

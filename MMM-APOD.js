@@ -20,6 +20,7 @@ Module.register("MMM-APOD",{
 		maxDescriptionLength: 200,
 		backgroundSize: "cover",
 		backgroundPosition: "center",
+		backgroundOverlay: "linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.75) 100%)",
 		showTitle: true,
 		showDescription: false,
 		useShortDescription: true,
@@ -83,6 +84,16 @@ Module.register("MMM-APOD",{
 			apodBackground.style.backgroundImage = 'url("' + this.url + '")';
 
 			wrapper.appendChild(apodBackground);
+			
+			if(this.config.backgroundOverlay != "") {
+				var apodBackgroundOverlay = document.createElement('div');
+
+				apodBackgroundOverlay.className = "overlay";
+
+				apodBackgroundOverlay.style.background = this.config.backgroundOverlay;
+
+				wrapper.appendChild(apodBackgroundOverlay);
+			}
 		} else {
 			if(this.config.showTitle) {
 				var apodTitle = document.createElement('div');
