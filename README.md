@@ -9,13 +9,13 @@ The max-height and max-width of the media can be fixed. Title and description di
 <img alt="MMM-APOD Screenshot #3" src="MMM-APOD_screenshot3.png" height="250px">
 </p>
 
-MMM-APOD can be used to display the image in the background of [MagicMirror](https://magicmirror.builders/) with `position: "fullscreen_below"`! Overlay image can be customized.
+MMM-APOD can be used to display the image in the background of [MagicMirror²](https://magicmirror.builders/) with `position: "fullscreen_below"`! Overlay image can be customized.
 
 <p align="left">
 <img alt="MMM-APOD Screenshot #4" src="MMM-APOD_screenshot4.png" height="250px">
 </p>
 
-[MagicMirror Project on Github](https://github.com/MichMich/MagicMirror) | [APOD on NASA](https://apod.nasa.gov/)
+[MagicMirror² on Github](https://github.com/MichMich/MagicMirror) | [APOD on NASA](https://apod.nasa.gov/)
 
 ## Installation:
 

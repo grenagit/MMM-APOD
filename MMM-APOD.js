@@ -1,7 +1,7 @@
-/* Magic Mirror
+/* MagicMirror²
  * Module: MMM-APOD
  *
- * Magic Mirror By Michael Teeuw https://magicmirror.builders
+ * MagicMirror² By Michael Teeuw https://magicmirror.builders
  * MIT Licensed.
  *
  * Module MMM-APOD By Grena https://github.com/grenagit
