@@ -18,6 +18,9 @@ Module.register("MMM-APOD",{
 		maxMediaWidth: 0,
 		maxMediaHeight: 0,
 		maxDescriptionLength: 200,
+		backgroundSize: "cover",
+		backgroundPosition: "center",
+		backgroundOverlay: "linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.75) 100%)",
 		showTitle: true,
 		showDescription: false,
 		useShortDescription: true,
@@ -43,6 +46,14 @@ Module.register("MMM-APOD",{
 		this.copyright = null;
 		this.type = null;
 		this.url = null;
+
+		if(this.data.position === 'fullscreen_below') {
+			this.backgrounded = true;
+			this.data.header = null;
+		} else {
+			this.backgrounded = false;
+		}
+
 		this.loaded = false;
 		this.scheduleUpdate(this.config.initialLoadDelay);
 	},
@@ -51,92 +62,90 @@ Module.register("MMM-APOD",{
 	getDom: function() {
 		var wrapper = document.createElement("div");
 
-		if (this.config.appid === "") {
+		if(this.config.appid === "") {
 			wrapper.innerHTML = "Please set the correct NASA <i>appid</i> in the config for module: " + this.name + ".";
 			wrapper.className = "dimmed light small";
 			return wrapper;
 		}
 
-		if (!this.loaded) {
+		if(!this.loaded) {
 			wrapper.innerHTML = this.translate("LOADING");
 			wrapper.className = "dimmed light small";
 			return wrapper;
 		}
 
-		if(this.config.showTitle) {
-			var apodTitle = document.createElement('div');
-			apodTitle.className = "dimmed light small";
-			apodTitle.innerHTML = this.title;
-			wrapper.appendChild(apodTitle);
-		}
+		if(this.backgrounded) {
+			var apodBackground = document.createElement('div');
 
-		if (this.type === "image") {
+			apodBackground.className = "background";
+
+			apodBackground.style.backgroundSize = this.config.backgroundSize;
+			apodBackground.style.backgroundPosition = this.config.backgroundPosition;
+			apodBackground.style.backgroundImage = 'url("' + this.url + '")';
+
+			wrapper.appendChild(apodBackground);
+			
+			if(this.config.backgroundOverlay != "") {
+				var apodBackgroundOverlay = document.createElement('div');
+
+				apodBackgroundOverlay.className = "overlay";
+
+				apodBackgroundOverlay.style.background = this.config.backgroundOverlay;
+
+				wrapper.appendChild(apodBackgroundOverlay);
+			}
+		} else {
+			if(this.config.showTitle) {
+				var apodTitle = document.createElement('div');
+
+				apodTitle.className = "dimmed light small";
+				apodTitle.innerHTML = this.title;
+ 
+				wrapper.appendChild(apodTitle);
+			}
+
 			var apodImage = document.createElement('img');
 
-			var styleString = '';
-			if (this.config.maxMediaWidth != 0) {
-				styleString += 'max-width: ' + this.config.maxMediaWidth + 'px;';
+			if(this.config.maxMediaWidth != 0) {
+				apodImage.style.maxWidth = this.config.maxMediaWidth + 'px';
 			}
-			if (this.config.maxMediaHeight != 0) {
-				styleString += 'max-height: ' + this.config.maxMediaHeight + 'px;';
-			}
-			if (styleString != '') {
-				apodImage.style = styleString;
+			if(this.config.maxMediaHeight != 0) {
+				apodImage.style.maxHeight = this.config.maxMediaHeight + 'px';
 			}
 
 			apodImage.src = this.url;
 			apodImage.alt = this.title;
 
 			wrapper.appendChild(apodImage);
-		} else if (this.type === "video") {
-			var apodVideo = document.createElement('iframe');
 
-			var styleString = 'border: none;';
-			if (this.config.maxMediaWidth != 0) {
-				styleString += 'max-width: ' + this.config.maxMediaWidth + 'px;';
-			}
-			if (this.config.maxMediaHeight != 0) {
-				styleString += 'max-height: ' + this.config.maxMediaHeight + 'px;';
-			}
-			apodVideo.style = styleString;
+			if(this.copyright != "" && typeof this.copyright !== "undefined") {
+				var apodCopyright = document.createElement('div');
 
-			apodVideo.src = this.url.replace("www.youtube.com", "www.youtube-nocookie.com");
-			apodVideo.width = "960";
-			apodVideo.height = "540";
+				apodCopyright.className = "dimmed thin xsmall";
+				apodCopyright.innerHTML = "&copy; " + this.copyright;
 
-			wrapper.appendChild(apodVideo);
-		} else {
-			Log.error(this.name + ": Type of media unknown (not image or video).");
-			return;
-		}
-
-		if(this.copyright != "" && typeof this.copyright !== "undefined") {
-			var apodCopyright = document.createElement('div');
-
-			apodCopyright.className = "dimmed thin xsmall";
-			apodCopyright.innerHTML = "&copy; " + this.copyright;
-
-			wrapper.appendChild(apodCopyright);
-		}
-
-		if(this.config.showDescription) {
-			var apodDescription = document.createElement('div');
-
-			apodDescription.className = "dimmed light xsmall description";
-
-			if (this.config.maxMediaWidth != 0) {
-				apodDescription.style = 'max-width: ' + this.config.maxMediaWidth + 'px;';
-			} else if (this.type === "video") {
-				apodDescription.style = 'max-width: 960px;';
+				wrapper.appendChild(apodCopyright);
 			}
 
-			if(this.config.useShortDescription) {
-				apodDescription.innerHTML = this.shortText(this.description, this.config.maxDescriptionLength);
-			} else {
-				apodDescription.innerHTML = this.description;
-			}
+			if(this.config.showDescription) {
+				var apodDescription = document.createElement('div');
 
-			wrapper.appendChild(apodDescription);
+				apodDescription.className = "dimmed light xsmall description";
+
+				if(this.config.maxMediaWidth != 0) {
+					apodDescription.style.maxWidth = this.config.maxMediaWidth + 'px';
+				} else if(this.type === "video") {
+					apodDescription.style.maxWidth = '960px';
+				}
+
+				if(this.config.useShortDescription) {
+					apodDescription.innerHTML = this.shortText(this.description, this.config.maxDescriptionLength);
+				} else {
+					apodDescription.innerHTML = this.description;
+				}
+
+				wrapper.appendChild(apodDescription);
+			}
 		}
 
 		return wrapper;
@@ -144,7 +153,7 @@ Module.register("MMM-APOD",{
 
 	// Request new data from api.nasa.gov
 	updateAPOD: function() {
-		if (this.config.appid === "") {
+		if(this.config.appid === "") {
 			Log.error(this.name + ": APPID not set.");
 			return;
 		}
@@ -156,15 +165,15 @@ Module.register("MMM-APOD",{
 		var apodRequest = new XMLHttpRequest();
 		apodRequest.open("GET", url, true);
 		apodRequest.onreadystatechange = function() {
-			if (this.readyState === 4) {
-				if (this.status === 200) {
+			if(this.readyState === 4) {
+				if(this.status === 200) {
 					self.processAPOD(JSON.parse(this.response));
-				} else if (this.status === 403) {
+				} else if(this.status === 403) {
 					self.updateDom(self.config.animationSpeed);
 
 					Log.error(self.name + ": Incorrect APPID.");
 					retry = false;
-				} else if (this.status === 429) {
+				} else if(this.status === 429) {
 					self.updateDom(self.config.animationSpeed);
 
 					Log.error(self.name + ": Rate limit exceeded.");
@@ -173,7 +182,7 @@ Module.register("MMM-APOD",{
 					Log.error(self.name + ": Could not load APOD.");
 				}
 
-				if (retry) {
+				if(retry) {
 					self.scheduleUpdate((self.loaded) ? -1 : self.config.retryDelay);
 				}
 			}
@@ -183,7 +192,7 @@ Module.register("MMM-APOD",{
 
 	// Use the received data to set the various values before update DOM
 	processAPOD: function(data) {
-		if (!data || typeof data.url === "undefined") {
+		if(!data || typeof data.url === "undefined") {
 			Log.error(this.name + ": Do not receive usable data.");
 			return;
 		}
@@ -193,7 +202,20 @@ Module.register("MMM-APOD",{
 		this.copyright = data.copyright;
 
 		this.type = data.media_type;
-		this.url = data.url;
+
+		if(this.type === "image") {
+			if(typeof data.hdurl !== "undefined") {
+				this.url = data.hdurl;
+			} else {
+				this.url = data.url;
+			}
+		} else if(this.type === "video") {
+			let id = data.url.match(/(?:[?&]vi?=|\/embed\/|\/\d\d?\/|\/vi?\/|https?:\/\/(?:www\.)?youtu\.be\/)([^&\n?#]+)/)[1];
+			this.url = "https://img.youtube.com/vi/" + id + "/maxresdefault.jpg";
+		} else {
+			Log.error(this.name + ": Type of media unknown (not image or video).");
+			return;
+		}
 
 		this.loaded = true;
 		this.updateDom(this.config.animationSpeed);
@@ -202,7 +224,7 @@ Module.register("MMM-APOD",{
 	// Schedule next update
 	scheduleUpdate: function(delay) {
 		var nextLoad = this.config.updateInterval;
-		if (typeof delay !== "undefined" && delay >= 0) {
+		if(typeof delay !== "undefined" && delay >= 0) {
 			nextLoad = delay;
 		}
 
@@ -214,9 +236,9 @@ Module.register("MMM-APOD",{
 
 	// Short text without cutting sentences and words
 	shortText: function (text, maxLenght) {
-		if (text.lastIndexOf(".", maxLenght) !== -1) {
+		if(text.lastIndexOf(".", maxLenght) !== -1) {
 			return text.substr(0, text.lastIndexOf(".", maxLenght)) + ".";
-		} else if (text.lastIndexOf(" ", maxLenght) !== -1) {
+		} else if(text.lastIndexOf(" ", maxLenght) !== -1) {
 			return text.substr(0, text.lastIndexOf(" ", maxLenght)) + "&hellip;";
 		} else {
 			return text.substr(0, maxLenght) + "&hellip;";
