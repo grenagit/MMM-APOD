@@ -16,7 +16,7 @@ MMM-APOD can be used to display the image in the background of [MagicMirror²](h
 <img alt="MMM-APOD Screenshot #4" src="MMM-APOD_screenshot4.png" height="250px">
 </p>
 
-[MagicMirror² on Github](https://github.com/MichMich/MagicMirror) | [APOD on NASA](https://apod.nasa.gov/)
+[MagicMirror² on Github](https://github.com/MagicMirrorOrg/MagicMirror) | [APOD on NASA](https://apod.nasa.gov/)
 
 ## Installation
 
