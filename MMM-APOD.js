@@ -1,7 +1,7 @@
-/* Magic Mirror
+/* MagicMirror²
  * Module: MMM-APOD
  *
- * Magic Mirror By Michael Teeuw https://magicmirror.builders
+ * MagicMirror² By Michael Teeuw https://magicmirror.builders
  * MIT Licensed.
  *
  * Module MMM-APOD By Grena https://github.com/grenagit
@@ -152,7 +152,7 @@ Module.register("MMM-APOD",{
 	},
 
 	// Request new data from api.nasa.gov
-	updateAPOD: function() {
+	updateAPOD: async function() {
 		if(this.config.appid === "") {
 			Log.error(this.name + ": APPID not set.");
 			return;
@@ -162,32 +162,29 @@ Module.register("MMM-APOD",{
 		var self = this;
 		var retry = true;
 
-		var apodRequest = new XMLHttpRequest();
-		apodRequest.open("GET", url, true);
-		apodRequest.onreadystatechange = function() {
-			if(this.readyState === 4) {
-				if(this.status === 200) {
-					self.processAPOD(JSON.parse(this.response));
-				} else if(this.status === 403) {
-					self.updateDom(self.config.animationSpeed);
-
-					Log.error(self.name + ": Incorrect APPID.");
-					retry = false;
-				} else if(this.status === 429) {
-					self.updateDom(self.config.animationSpeed);
-
-					Log.error(self.name + ": Rate limit exceeded.");
-					retry = false;
-				} else {
-					Log.error(self.name + ": Could not load APOD.");
-				}
-
-				if(retry) {
-					self.scheduleUpdate((self.loaded) ? -1 : self.config.retryDelay);
-				}
+		try {
+			const response = await fetch(url);
+			if(response.status === 200) {
+				const data = await response.json();
+				self.processAPOD(data);
+			} else if(response.status === 403) {
+				self.updateDom(self.config.animationSpeed);
+				retry = false;
+				throw new Error(self.name + ": Incorrect APPID.");
+			} else if(response.status === 429) {
+				self.updateDom(self.config.animationSpeed);
+				retry = false;
+				throw new Error(self.name + ": Rate limit exceeded.");
+			} else {
+				throw new Error(self.name + ": Could not load APOD.");
 			}
-		};
-		apodRequest.send();
+		} catch(error) {
+			Log.error(error);
+		} finally {
+			if(retry) {
+				self.scheduleUpdate((self.loaded) ? -1 : self.config.retryDelay);
+			}
+		}
 	},
 
 	// Use the received data to set the various values before update DOM

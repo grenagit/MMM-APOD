@@ -1,0 +1,30 @@
+{
+  "name": "MMM-APOD",
+  "version": "1.2.0",
+  "description": "A MagicMirror² module to display the last Astronomy Picture Of the Day (APOD) and using NASA API.",
+  "main": "MMM-APOD.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grenagit/MMM-APOD.git"
+  },
+  "keywords": [
+    "MagicMirror",
+    "NASA",
+    "APOD",
+    "astronomy",
+    "picture",
+    "astrophotography",
+    "space",
+    "background",
+    "wallpaper"
+  ],
+  "author": "grenagit",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/grenagit/MMM-APOD/issues"
+  },
+  "homepage": "https://github.com/grenagit/MMM-APOD#readme"
+}
