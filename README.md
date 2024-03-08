@@ -1,4 +1,5 @@
 # Module: MMM-APOD
+
 This module displays the last Astronomy Picture Of the Day (APOD), including media (image or video), title, description and copyright.
 
 The max-height and max-width of the media can be fixed. Title and description display may be enabled or disabled independently. Description can be shorted and lenght can be fixed.
@@ -9,45 +10,50 @@ The max-height and max-width of the media can be fixed. Title and description di
 <img alt="MMM-APOD Screenshot #3" src="MMM-APOD_screenshot3.png" height="250px">
 </p>
 
-MMM-APOD can be used to display the image in the background of [MagicMirror](https://magicmirror.builders/) with `position: "fullscreen_below"`! Overlay image can be customized.
+MMM-APOD can be used to display the image in the background of [MagicMirror²](https://magicmirror.builders/) with `position: "fullscreen_below"`! Overlay image can be customized.
 
 <p align="left">
 <img alt="MMM-APOD Screenshot #4" src="MMM-APOD_screenshot4.png" height="250px">
 </p>
 
-[MagicMirror Project on Github](https://github.com/MichMich/MagicMirror) | [APOD on NASA](https://apod.nasa.gov/)
+[MagicMirror² on Github](https://github.com/MagicMirrorOrg/MagicMirror) | [APOD on NASA](https://apod.nasa.gov/)
 
-## Installation:
+## Installation
 
 In your terminal, go to your MagicMirror's Module folder:
+
 ```shell
 cd ~/MagicMirror/modules
 ```
 
 Clone this repository:
+
 ```shell
 git clone https://github.com/grenagit/MMM-APOD
 ```
 
 Configure the module in your config.js file.
 
-## Update:
+## Update
 
 In your terminal, go to your MMM-APOD's Module folder:
+
 ```shell
 cd ~/MagicMirror/modules/MMM-APOD
 ```
 
 Incorporate changes from this repository:
+
 ```shell
 git pull
 ```
 
-## Configuration:
+## Configuration
 
 ### Basic configuration
 
 To use this module, add it to the modules array in the `config/config.js` file:
+
 ```javascript
 modules: [
 	{
@@ -65,7 +71,6 @@ You can use the special `DEMO_KEY` API Key for your tests but it has much lower 
 ### Options
 
 The following properties can be configured:
-
 
 | Option                       | Description
 | ---------------------------- | -----------
