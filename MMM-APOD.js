@@ -152,13 +152,21 @@ Module.register("MMM-APOD",{
 	},
 
 	// Request new data from api.nasa.gov
-	updateAPOD: async function() {
+	updateAPOD: async function(daysAgo) {
 		if(this.config.appid === "") {
 			Log.error(this.name + ": APPID not set.");
 			return;
 		}
-
 		var url = this.config.apiBase + this.config.apodEndpoint + "?api_key=" + this.config.appid;
+		daysAgo = daysAgo || 0;
+		if(daysAgo > 0) {
+			const queryDate = new Date();
+			queryDate.setTime(queryDate.getTime() - 24*60*60*1000*daysAgo);
+			const queryDateString = `${queryDate.getFullYear()}-${String(queryDate.getMonth() + 1).padStart(2, '0')}-${String(queryDate.getDate()).padStart(2, '0')}`;
+			Log.info(`Querying from ${queryDateString}`);
+			url = `${url}&date=${queryDateString}`;
+		}
+
 		var self = this;
 		var retry = true;
 
@@ -166,7 +174,13 @@ Module.register("MMM-APOD",{
 			const response = await fetch(url);
 			if(response.status === 200) {
 				const data = await response.json();
-				self.processAPOD(data);
+				if(!self.processAPOD(data)) {
+					retry = false;
+					if(daysAgo > 6) {
+						throw new Error(`${self.name}: Unable to find an image in the last ${daysAgo} days, check the NASA API: ${url}`);
+					}
+					await self.updateAPOD(daysAgo + 1);
+				}
 			} else if(response.status === 403) {
 				self.updateDom(self.config.animationSpeed);
 				retry = false;
@@ -191,7 +205,7 @@ Module.register("MMM-APOD",{
 	processAPOD: function(data) {
 		if(!data || typeof data.url === "undefined") {
 			Log.error(this.name + ": Do not receive usable data.");
-			return;
+			return false;
 		}
 
 		this.title = data.title;
@@ -211,11 +225,12 @@ Module.register("MMM-APOD",{
 			this.url = "https://img.youtube.com/vi/" + id + "/maxresdefault.jpg";
 		} else {
 			Log.error(this.name + ": Type of media unknown (not image or video).");
-			return;
+			return false;
 		}
 
 		this.loaded = true;
 		this.updateDom(this.config.animationSpeed);
+		return true;
 	},
 
 	// Schedule next update
