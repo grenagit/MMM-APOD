@@ -12,7 +12,6 @@ Module.register("MMM-APOD",{
 
 	// Default module config
 	defaults: {
-		appid: "",
 		updateInterval: 6 * 60 * 60 * 1000, // every 6 hours
 		animationSpeed: 1000, // 1 second
 		maxMediaWidth: 0,
@@ -28,8 +27,8 @@ Module.register("MMM-APOD",{
 		initialLoadDelay: 0, // 0 seconds delay
 		retryDelay: 2500, // 2,5 seconds
 
-		apiBase: "https://science.nasa.gov/wp-json/wp/v2/",
-		apodEndpoint: "apod-basic/",
+		apiBase: "https://science.nasa.gov/",
+		apodEndpoint: "wp-json/wp/v2/apod-basic/",
 	},
 
 	// Define required scripts
@@ -61,12 +60,6 @@ Module.register("MMM-APOD",{
 	// Override dom generator
 	getDom: function() {
 		var wrapper = document.createElement("div");
-
-		if(this.config.appid === "") {
-			wrapper.innerHTML = "Please set the correct NASA <i>appid</i> in the config for module: " + this.name + ".";
-			wrapper.className = "dimmed light small";
-			return wrapper;
-		}
 
 		if(!this.loaded) {
 			wrapper.innerHTML = this.translate("LOADING");
@@ -151,14 +144,9 @@ Module.register("MMM-APOD",{
 		return wrapper;
 	},
 
-	// Request new data from api.nasa.gov
+	// Request new data from NASA
 	updateAPOD: async function() {
-		if(this.config.appid === "") {
-			Log.error(this.name + ": APPID not set.");
-			return;
-		}
-
-		var url = this.config.apiBase + this.config.apodEndpoint + "?api_key=" + this.config.appid;
+		var url = this.config.apiBase + this.config.apodEndpoint;
 		var self = this;
 		var retry = true;
 
@@ -167,22 +155,13 @@ Module.register("MMM-APOD",{
 			if(response.status === 200) {
 				const result = await response.json();
 
-				const data =
-					Array.isArray(result)
-						? result[0]
-						: result;
-
+				const data = Array.isArray(result) ? result[0] : result;
 				if(!data) {
-					throw new Error(
-						self.name + ": NASA returned no APOD entries."
-					);
+					self.updateDom(self.config.animationSpeed);
+					throw new Error(self.name + ": NASA returned no APOD entries.");
 				}
 
 				self.processAPOD(data);
-			} else if(response.status === 403) {
-				self.updateDom(self.config.animationSpeed);
-				retry = false;
-				throw new Error(self.name + ": Incorrect APPID.");
 			} else if(response.status === 429) {
 				self.updateDom(self.config.animationSpeed);
 				retry = false;
@@ -201,51 +180,23 @@ Module.register("MMM-APOD",{
 
 	// Use the received data to set the various values before update DOM
 	processAPOD: function(data) {
-		if(!data || typeof data.media_type === "undefined") {
+		if(!data || typeof data.media_type === "undefined" || typeof data.hdurl === "undefined") {
 			Log.error(this.name + ": Did not receive usable APOD data.");
 			return;
 		}
 
 		this.title = data.title;
 		this.description = data.explanation;
+		this.url = data.hdurl;
 		this.copyright = data.copyright;
 
 		this.type = data.media_type;
-
-		/*
-		 * The new NASA APOD API uses data.url for the APOD article
-		 * permalink. The actual featured media image is data.hdurl.
-		 *
-		 * Upstream MMM-APOD historically renders video APODs as still
-		 * images, so use NASA's featured image for image, video, and
-		 * iframe entries.
-		 */
-		if(
-			this.type === "image" ||
-			this.type === "video" ||
-			this.type === "iframe"
-		) {
-			if(
-				typeof data.hdurl !== "undefined" &&
-				data.hdurl
-			) {
-				this.url = data.hdurl;
-			} else {
-				Log.error(
-					this.name +
-						": NASA did not provide a usable APOD image."
-				);
-				return;
-			}
-		} else {
-			Log.error(
-				this.name +
-					": Unknown APOD media type: " +
-					this.type
-			);
+		
+		if(this.type !== "image" && this.type !== "video" && this.type !== "iframe") {
+			Log.error(this.name + ": Unknown APOD media type: " + this.type);
 			return;
 		}
-
+		
 		this.loaded = true;
 		this.updateDom(this.config.animationSpeed);
 	},

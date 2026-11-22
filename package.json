@@ -1,6 +1,6 @@
 {
   "name": "MMM-APOD",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "A MagicMirror² module to display the last Astronomy Picture Of the Day (APOD) and using NASA API.",
   "main": "MMM-APOD.js",
   "scripts": {
