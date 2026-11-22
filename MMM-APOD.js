@@ -167,15 +167,10 @@ Module.register("MMM-APOD",{
 			if(response.status === 200) {
 				const result = await response.json();
 
-				const data =
-					Array.isArray(result)
-						? result[0]
-						: result;
-
+				const data = Array.isArray(result) ? result[0] : result;
 				if(!data) {
-					throw new Error(
-						self.name + ": NASA returned no APOD entries."
-					);
+					self.updateDom(self.config.animationSpeed);
+					throw new Error(self.name + ": NASA returned no APOD entries.");
 				}
 
 				self.processAPOD(data);
@@ -201,51 +196,23 @@ Module.register("MMM-APOD",{
 
 	// Use the received data to set the various values before update DOM
 	processAPOD: function(data) {
-		if(!data || typeof data.media_type === "undefined") {
+		if(!data || typeof data.media_type === "undefined" || typeof data.hdurl === "undefined") {
 			Log.error(this.name + ": Did not receive usable APOD data.");
 			return;
 		}
 
 		this.title = data.title;
 		this.description = data.explanation;
+		this.url = data.hdurl;
 		this.copyright = data.copyright;
 
 		this.type = data.media_type;
-
-		/*
-		 * The new NASA APOD API uses data.url for the APOD article
-		 * permalink. The actual featured media image is data.hdurl.
-		 *
-		 * Upstream MMM-APOD historically renders video APODs as still
-		 * images, so use NASA's featured image for image, video, and
-		 * iframe entries.
-		 */
-		if(
-			this.type === "image" ||
-			this.type === "video" ||
-			this.type === "iframe"
-		) {
-			if(
-				typeof data.hdurl !== "undefined" &&
-				data.hdurl
-			) {
-				this.url = data.hdurl;
-			} else {
-				Log.error(
-					this.name +
-						": NASA did not provide a usable APOD image."
-				);
-				return;
-			}
-		} else {
-			Log.error(
-				this.name +
-					": Unknown APOD media type: " +
-					this.type
-			);
+		
+		if(this.type !== "image" && this.type !== "video" && this.type !== "iframe") {
+			Log.error(this.name + ": Unknown APOD media type: " + this.type);
 			return;
 		}
-
+		
 		this.loaded = true;
 		this.updateDom(this.config.animationSpeed);
 	},
