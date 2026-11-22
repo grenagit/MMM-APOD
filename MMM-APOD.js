@@ -28,8 +28,8 @@ Module.register("MMM-APOD",{
 		initialLoadDelay: 0, // 0 seconds delay
 		retryDelay: 2500, // 2,5 seconds
 
-		apiBase: "https://api.nasa.gov/",
-		apodEndpoint: "planetary/apod",
+		apiBase: "https://science.nasa.gov/wp-json/wp/v2/",
+		apodEndpoint: "apod-basic/",
 	},
 
 	// Define required scripts
@@ -165,7 +165,19 @@ Module.register("MMM-APOD",{
 		try {
 			const response = await fetch(url);
 			if(response.status === 200) {
-				const data = await response.json();
+				const result = await response.json();
+
+				const data =
+					Array.isArray(result)
+						? result[0]
+						: result;
+
+				if(!data) {
+					throw new Error(
+						self.name + ": NASA returned no APOD entries."
+					);
+				}
+
 				self.processAPOD(data);
 			} else if(response.status === 403) {
 				self.updateDom(self.config.animationSpeed);
@@ -189,8 +201,8 @@ Module.register("MMM-APOD",{
 
 	// Use the received data to set the various values before update DOM
 	processAPOD: function(data) {
-		if(!data || typeof data.url === "undefined") {
-			Log.error(this.name + ": Do not receive usable data.");
+		if(!data || typeof data.media_type === "undefined") {
+			Log.error(this.name + ": Did not receive usable APOD data.");
 			return;
 		}
 
@@ -200,17 +212,37 @@ Module.register("MMM-APOD",{
 
 		this.type = data.media_type;
 
-		if(this.type === "image") {
-			if(typeof data.hdurl !== "undefined") {
+		/*
+		 * The new NASA APOD API uses data.url for the APOD article
+		 * permalink. The actual featured media image is data.hdurl.
+		 *
+		 * Upstream MMM-APOD historically renders video APODs as still
+		 * images, so use NASA's featured image for image, video, and
+		 * iframe entries.
+		 */
+		if(
+			this.type === "image" ||
+			this.type === "video" ||
+			this.type === "iframe"
+		) {
+			if(
+				typeof data.hdurl !== "undefined" &&
+				data.hdurl
+			) {
 				this.url = data.hdurl;
 			} else {
-				this.url = data.url;
+				Log.error(
+					this.name +
+						": NASA did not provide a usable APOD image."
+				);
+				return;
 			}
-		} else if(this.type === "video") {
-			let id = data.url.match(/(?:[?&]vi?=|\/embed\/|\/\d\d?\/|\/vi?\/|https?:\/\/(?:www\.)?youtu\.be\/)([^&\n?#]+)/)[1];
-			this.url = "https://img.youtube.com/vi/" + id + "/maxresdefault.jpg";
 		} else {
-			Log.error(this.name + ": Type of media unknown (not image or video).");
+			Log.error(
+				this.name +
+					": Unknown APOD media type: " +
+					this.type
+			);
 			return;
 		}
 
