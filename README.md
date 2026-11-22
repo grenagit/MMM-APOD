@@ -50,6 +50,8 @@ git pull
 
 ## Configuration
 
+> **Note:** Since version 1.3.0, an NASA API key is no longer required.
+
 ### Basic configuration
 
 To use this module, add it to the modules array in the `config/config.js` file:
