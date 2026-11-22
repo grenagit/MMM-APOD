@@ -58,15 +58,10 @@ To use this module, add it to the modules array in the `config/config.js` file:
 modules: [
 	{
 		module: "MMM-APOD",
-		position: "top_left",
-		config: {
-			appid: "abcde12345abcde12345abcde12345ab" // NASA API key (api.nasa.gov)
-		}
+		position: "top_left"
 	}
 ]
 ```
-
-You can use the special `DEMO_KEY` API Key for your tests but it has much lower rate limits !
 
 ### Options
 
@@ -74,7 +69,6 @@ The following properties can be configured:
 
 | Option                       | Description
 | ---------------------------- | -----------
-| `appid`                      | The [NASA](https://api.nasa.gov) API key, which can be obtained by [signing up](https://api.nasa.gov/index.html#apply-for-an-api-key) on NASA API portal. It's free! <br><br>  This value is **REQUIRED**
 | `updateInterval`             | How often does the content needs to be fetched? (Milliseconds) <br><br> **Possible values:** `1000` - `86400000` <br> **Default value:** `6 * 60 * 60 * 1000` (6 hours)
 | `animationSpeed`             | Speed of the update animation. (Milliseconds) <br><br> **Possible values:**`0` - `5000` <br> **Default value:** `1000` (1 second)
 | `maxMediaWidth`              | Maximum width for media display. If set to 0, the media's actual width is used. (Pixels) <br><br> **Possible values:**`0` - `5000` <br> **Default value:** `0` (media's width)
@@ -86,10 +80,10 @@ The following properties can be configured:
 | `showTitle`                  | Show the title. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
 | `showDescription`            | Show the description. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
 | `useShortDescription`        | Short the description. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `true`
-| `initialLoadDelay`           | The initial delay before loading. If you have multiple modules that use the same API key, you might want to delay one of the requests. (Milliseconds) <br><br> **Possible values:** `1000` - `5000` <br> **Default value:**  `0`
+| `initialLoadDelay`           | The initial delay before loading. (Milliseconds) <br><br> **Possible values:** `1000` - `5000` <br> **Default value:**  `0`
 | `retryDelay`                 | The delay before retrying after a request failure. (Milliseconds) <br><br> **Possible values:** `1000` - `60000` <br> **Default value:**  `2500`
-| `apiBase`                    | The NASA API base URL. <br><br> **Default value:**  `'https://api.nasa.gov/'`
-| `apodEndpoint`               | The APOD API endPoint. <br><br> **Default value:**  `'planetary/apod'`
+| `apiBase`                    | The NASA API base URL. <br><br> **Default value:**  `'https://science.nasa.gov/'`
+| `apodEndpoint`               | The APOD API endPoint. <br><br> **Default value:**  `'wp-json/wp/v2/apod-basic/'`
 
 ### Todo
 

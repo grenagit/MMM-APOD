@@ -12,7 +12,6 @@ Module.register("MMM-APOD",{
 
 	// Default module config
 	defaults: {
-		appid: "",
 		updateInterval: 6 * 60 * 60 * 1000, // every 6 hours
 		animationSpeed: 1000, // 1 second
 		maxMediaWidth: 0,
@@ -28,8 +27,8 @@ Module.register("MMM-APOD",{
 		initialLoadDelay: 0, // 0 seconds delay
 		retryDelay: 2500, // 2,5 seconds
 
-		apiBase: "https://science.nasa.gov/wp-json/wp/v2/",
-		apodEndpoint: "apod-basic/",
+		apiBase: "https://science.nasa.gov/",
+		apodEndpoint: "wp-json/wp/v2/apod-basic/",
 	},
 
 	// Define required scripts
@@ -61,12 +60,6 @@ Module.register("MMM-APOD",{
 	// Override dom generator
 	getDom: function() {
 		var wrapper = document.createElement("div");
-
-		if(this.config.appid === "") {
-			wrapper.innerHTML = "Please set the correct NASA <i>appid</i> in the config for module: " + this.name + ".";
-			wrapper.className = "dimmed light small";
-			return wrapper;
-		}
 
 		if(!this.loaded) {
 			wrapper.innerHTML = this.translate("LOADING");
@@ -151,14 +144,9 @@ Module.register("MMM-APOD",{
 		return wrapper;
 	},
 
-	// Request new data from api.nasa.gov
+	// Request new data from NASA
 	updateAPOD: async function() {
-		if(this.config.appid === "") {
-			Log.error(this.name + ": APPID not set.");
-			return;
-		}
-
-		var url = this.config.apiBase + this.config.apodEndpoint + "?api_key=" + this.config.appid;
+		var url = this.config.apiBase + this.config.apodEndpoint;
 		var self = this;
 		var retry = true;
 
@@ -174,10 +162,6 @@ Module.register("MMM-APOD",{
 				}
 
 				self.processAPOD(data);
-			} else if(response.status === 403) {
-				self.updateDom(self.config.animationSpeed);
-				retry = false;
-				throw new Error(self.name + ": Incorrect APPID.");
 			} else if(response.status === 429) {
 				self.updateDom(self.config.animationSpeed);
 				retry = false;
